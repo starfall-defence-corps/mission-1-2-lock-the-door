@@ -1,0 +1,95 @@
+name: ARIA Review
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  aria-review:
+    name: ARIA — Mission 1.2 Review
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout mission repo
+        uses: actions/checkout@v4
+
+      - name: Start fleet nodes
+        run: make setup
+
+      - name: Run ARIA review
+        id: aria
+        uses: starfall-defence-corps/aria@main
+        with:
+          mission: "1-2"
+          mission-root: ${{ github.workspace }}
+          output-file: aria-output.txt
+          anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
+
+      - name: Post ARIA review as PR comment
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let output = '';
+            try {
+              output = fs.readFileSync('aria-output.txt', 'utf8');
+            } catch {
+              output = fs.readFileSync('aria-console.txt', 'utf8');
+            }
+            const exitCode = '${{ steps.aria.outputs.exit-code }}';
+            const status = exitCode === '0' ? 'COMPLETE' : 'INCOMPLETE';
+            const icon = exitCode === '0' ? ':white_check_mark:' : ':x:';
+            const marker = 'ARIA — Mission 1-2 Review';
+
+            const body = `## ${icon} ${marker} (${status})
+
+            <details>
+            <summary>Full ARIA Output</summary>
+
+            \`\`\`
+            ${output}
+            \`\`\`
+
+            </details>
+
+            ---
+            *ARIA — Automated Review & Intelligence Analyst*
+            *Starfall Defence Corps Academy*`;
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const ariaComment = comments.find(c => c.body.includes(marker));
+
+            if (ariaComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: ariaComment.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
+
+      - name: Fail if tests failed
+        if: steps.aria.outputs.exit-code != '0'
+        run: exit 1
+
+      - name: Tear down fleet
+        if: always()
+        run: docker compose -f .docker/docker-compose.yml down -v
