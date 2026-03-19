@@ -1,0 +1,65 @@
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV container=docker
+
+# Install systemd + SSH + Ansible prerequisites
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    systemd \
+    systemd-sysv \
+    openssh-server \
+    python3 \
+    python3-apt \
+    sudo \
+    iproute2 \
+    procps \
+    && rm -rf /var/lib/apt/lists/*
+
+# Mask unnecessary systemd units that cause issues in containers
+RUN systemctl mask \
+    dev-hugepages.mount \
+    sys-fs-fuse-connections.mount \
+    systemd-udev-trigger.service \
+    systemd-udevd.service \
+    systemd-update-utmp.service \
+    systemd-logind.service \
+    getty@.service \
+    getty.target
+
+# Enable SSH via systemd
+RUN systemctl enable ssh
+
+# === THE SSH ROOT FAIRY'S HANDIWORK ===
+# The SSH Root Fairy has visited every node in the fleet.
+# Root login: ENABLED. Password auth: ENABLED. LoginGraceTime: UNSET (default 120s).
+# These are the misconfigurations the cadet must fix.
+RUN mkdir -p /run/sshd \
+    && sed -i 's/#PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config \
+    && sed -i 's/#PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config \
+    && sed -i 's/#PubkeyAuthentication.*/PubkeyAuthentication yes/' /etc/ssh/sshd_config
+
+# The Root Fairy leaves a calling card
+RUN echo '# The SSH Root Fairy was here. Root login for everyone!' \
+    > /etc/ssh/sshd_config.d/root-fairy.conf \
+    && echo '# "Why lock doors when you can leave them wide open?" — The SSH Root Fairy' \
+    >> /etc/ssh/sshd_config.d/root-fairy.conf
+
+# Create cadet user for SSH access
+RUN useradd -m -s /bin/bash cadet \
+    && echo 'cadet:academy' | chpasswd \
+    && echo 'cadet ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers.d/cadet \
+    && chmod 0440 /etc/sudoers.d/cadet
+
+# Set up SSH key auth for cadet
+RUN mkdir -p /home/cadet/.ssh \
+    && chmod 700 /home/cadet/.ssh \
+    && chown cadet:cadet /home/cadet/.ssh
+
+# Set root password (insecure — deliberate misconfiguration for training)
+RUN echo 'root:starfall' | chpasswd
+
+EXPOSE 22
+
+STOPSIGNAL SIGRTMIN+3
+
+CMD ["/sbin/init"]

@@ -1,0 +1,70 @@
+services:
+  sdc-web:
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    container_name: sdc-web
+    hostname: sdc-web
+    privileged: true
+    cgroup: host
+    tmpfs:
+      - /run
+      - /run/lock
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+      - ./ssh-keys/authorized_keys:/home/cadet/.ssh/authorized_keys:ro
+    networks:
+      fleet_net:
+        ipv4_address: 172.30.0.11
+    ports:
+      - "2221:22"
+
+  sdc-db:
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    container_name: sdc-db
+    hostname: sdc-db
+    privileged: true
+    cgroup: host
+    tmpfs:
+      - /run
+      - /run/lock
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+      - ./ssh-keys/authorized_keys:/home/cadet/.ssh/authorized_keys:ro
+    networks:
+      fleet_net:
+        ipv4_address: 172.30.0.12
+    ports:
+      - "2222:22"
+
+  sdc-comms:
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    container_name: sdc-comms
+    hostname: sdc-comms
+    privileged: true
+    cgroup: host
+    tmpfs:
+      - /run
+      - /run/lock
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+      - ./ssh-keys/authorized_keys:/home/cadet/.ssh/authorized_keys:ro
+    networks:
+      fleet_net:
+        ipv4_address: 172.30.0.13
+    ports:
+      - "2223:22"
+
+networks:
+  fleet_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.30.0.0/24
