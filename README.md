@@ -20,8 +20,10 @@ You are a cadet at the Starfall Defence Corps Academy. The fleet was catalogued 
 ## Quick Start
 
 ```bash
-# 1. Clone (or fork) this repo
-git clone <repo-url>
+# 1. Use this template on GitHub (green button, top right)
+#    This creates YOUR OWN copy of the repo.
+#    Set it to Public, then clone it:
+git clone https://github.com/YOUR-USERNAME/mission-1-2-lock-the-door.git
 cd mission-1-2-lock-the-door
 
 # 2. Start the fleet
@@ -79,20 +81,18 @@ make ssh-comms  SSH into sdc-comms (fleet comms relay)
 
 ## ARIA Review (Pull Request Workflow)
 
-When you open a pull request, **ARIA** (Automated Review & Intelligence Analyst) automatically reviews your submission:
+**ARIA** (Automated Review & Intelligence Analyst) reviews your work in two ways:
 
-1. GitHub Actions runs the deterministic tests (`pytest`)
-2. Your playbook and test results are sent to an LLM
-3. ARIA posts a qualitative review as a PR comment — covering structure, security, and recommendations
+**Locally** — run `make test` for instant pass/fail verification. No API key needed.
 
-**Local testing** (`make test`) runs pytest only — fast, offline, no API key needed.
+**On Pull Request** — push your work to a branch, open a PR to `main`, and ARIA reads your playbook and posts a qualitative review as a PR comment (structure, security, recommendations).
 
-**PR review** requires an `ANTHROPIC_API_KEY` repo secret. To set up:
-1. Get an API key from [console.anthropic.com](https://console.anthropic.com/)
-2. In your fork: Settings > Secrets and variables > Actions > New repository secret
+To enable PR reviews, add an API key to your repo:
+1. Get a key from [platform.claude.com](https://platform.claude.com/)
+2. In your repo: **Settings** > **Secrets and variables** > **Actions** > **New repository secret**
 3. Name: `ANTHROPIC_API_KEY`, Value: your key
 
-If no API key is configured, PR review runs tests only and skips the LLM feedback.
+If no key is configured, ARIA skips the PR review — `make test` still works locally.
 
 ## Troubleshooting
 
