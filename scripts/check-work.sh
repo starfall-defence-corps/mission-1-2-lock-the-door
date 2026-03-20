@@ -29,7 +29,7 @@ fi
 # Run tests.
 # conftest.py writes our pretty output to stderr.
 # Redirect: stderr→terminal, stdout (pytest default noise)→/dev/null.
-python3 -m pytest "$TEST_FILE" --tb=short -q 2>&1 1>/dev/null
+python3 -m pytest "$TEST_FILE" --tb=no --no-header -q 2>&1 1>/dev/null
 EXIT_CODE=$?
 
 echo ""
