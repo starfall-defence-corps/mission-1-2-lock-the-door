@@ -52,8 +52,11 @@ This example sets `MaxAuthTries 3` in the SSH config. It is NOT one of your miss
         regexp: '^#?MaxAuthTries'
         line: 'MaxAuthTries 3'
         state: present
+        validate: 'sshd -t -f %s'
       notify: Restart SSH
 ```
+
+The `validate` line is important: it runs `sshd -t` (test mode) on the modified file **before** applying it. If you have a typo, the task will fail safely instead of breaking SSH.
 
 **Understanding `regexp: '^#?MaxAuthTries'`:**
 
@@ -300,6 +303,7 @@ All three containers (`sdc-web`, `sdc-db`, `sdc-comms`) should appear with a sta
         regexp: '^#?PermitRootLogin'
         line: 'PermitRootLogin no'
         state: present
+        validate: 'sshd -t -f %s'
       notify: Restart SSH
 
     - name: Disable password authentication
@@ -308,6 +312,7 @@ All three containers (`sdc-web`, `sdc-db`, `sdc-comms`) should appear with a sta
         regexp: '^#?PasswordAuthentication'
         line: 'PasswordAuthentication no'
         state: present
+        validate: 'sshd -t -f %s'
       notify: Restart SSH
 
     - name: Set LoginGraceTime to 30 seconds
@@ -316,6 +321,7 @@ All three containers (`sdc-web`, `sdc-db`, `sdc-comms`) should appear with a sta
         regexp: '^#?LoginGraceTime'
         line: 'LoginGraceTime 30'
         state: present
+        validate: 'sshd -t -f %s'
       notify: Restart SSH
 
   handlers:

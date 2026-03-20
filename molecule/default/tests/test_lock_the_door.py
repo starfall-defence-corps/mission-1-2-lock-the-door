@@ -181,6 +181,24 @@ class TestSSHHardening:
             f"ansible all -m shell -a \"grep {directive_name.split()[0]} /etc/ssh/sshd_config\""
         )
 
+    def test_ssh_service_running(self):
+        """SSH service must still be running on all nodes after playbook"""
+        result = _run_ansible(
+            "ansible", "all", "-m", "shell",
+            "-a", "systemctl is-active ssh",
+        )
+        failed_nodes = [
+            host for host in ["sdc-web", "sdc-db", "sdc-comms"]
+            if f"{host} | FAILED" in result.stdout
+            or (host in result.stdout and "inactive" in result.stdout.split(host)[1].split("\n")[0])
+        ]
+        assert result.returncode == 0, (
+            f"ARIA: SSH service is DOWN on: "
+            f"{', '.join(failed_nodes) if failed_nodes else 'one or more nodes'}. "
+            f"A config typo may have broken sshd. Run 'make reset' to restore, "
+            f"then add validate: 'sshd -t -f %s' to your lineinfile tasks."
+        )
+
     def test_root_login_disabled(self):
         """PermitRootLogin must be set to 'no' on all nodes"""
         self._check_sshd_config(

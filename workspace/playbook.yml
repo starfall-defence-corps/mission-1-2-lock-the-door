@@ -33,12 +33,15 @@
         path: /etc/ssh/sshd_config
         regexp: "^#?PermitRootLogin"
         line: "PermitRootLogin no"
+        validate: "sshd -t -f %s"
       # TODO: Add 'notify: Restart SSH' to trigger the handler
 
     # ----------------------------------------------------------
     # Task 2: Disable password authentication
     # ----------------------------------------------------------
     # Same pattern as Task 1, but for PasswordAuthentication.
+    # Keep the 'validate' line — it checks sshd_config syntax
+    # before applying, so a typo won't break SSH.
     #
     # TODO: Write this task (use Task 1 as a template)
 
@@ -47,6 +50,7 @@
     # ----------------------------------------------------------
     # Ensure "LoginGraceTime 30" is present.
     # The regexp should match any existing LoginGraceTime line.
+    # Include validate to protect against typos.
     #
     # TODO: Write this task
 
