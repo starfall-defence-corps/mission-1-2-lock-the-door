@@ -27,10 +27,12 @@ if [ -f "$ROOT_DIR/venv/bin/activate" ]; then
 fi
 
 # Run tests.
-# conftest.py writes our pretty output to stderr.
-# Redirect: stderr→terminal, stdout (pytest default noise)→/dev/null.
-python3 -m pytest "$TEST_FILE" --tb=no --no-header -q 2>&1 1>/dev/null
-EXIT_CODE=$?
+# conftest.py writes ARIA output to stderr. pytest also leaks assertion
+# noise to stderr. Filter: keep only our ARIA output (indented with 2+ spaces)
+# and strip pytest's "assert ..." and " +  where ..." lines.
+python3 -m pytest "$TEST_FILE" --tb=no --no-header -q 2>&1 1>/dev/null \
+    | grep -vE '^(assert |FAILED| *\+  where|  *\+  |[0-9]+ (passed|failed))' || true
+EXIT_CODE=${PIPESTATUS[0]}
 
 echo ""
 if [ $EXIT_CODE -eq 0 ]; then
