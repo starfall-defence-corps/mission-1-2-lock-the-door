@@ -168,3 +168,6 @@ def pytest_report_teststatus(report, config):
 def pytest_terminal_summary(terminalreporter, exitstatus, config):
     """Print our summary; clear stats to suppress the default summary."""
     _reporter.summary()
+    # Clear default stats so pytest doesn't print its own summary lines
+    terminalreporter.stats.pop("failed", None)
+    terminalreporter.stats.pop("error", None)
