@@ -229,7 +229,7 @@ class TestIdempotency:
     """ARIA verifies: Is the playbook idempotent?"""
 
     def test_playbook_is_idempotent(self):
-        """Running the playbook a second time must show changed=0"""
+        """Running the playbook must show changed=0 (configs already applied)"""
         data = _load_playbook()
         if data is None:
             pytest.skip("Playbook does not exist yet")
@@ -238,25 +238,28 @@ class TestIdempotency:
         if len(tasks) < 3:
             pytest.skip("Playbook tasks not yet complete")
 
-        first_run = _run_ansible(
-            "ansible-playbook", "playbook.yml",
+        # Check if SSH hardening is already applied — skip if not.
+        # This prevents make test from applying the playbook for the student.
+        check = _run_ansible(
+            "ansible", "all", "-m", "shell",
+            "-a", "grep -E '^PermitRootLogin\\s+no' /etc/ssh/sshd_config",
         )
-        if first_run.returncode != 0:
+        if check.returncode != 0:
             pytest.skip(
-                "Playbook failed on first run — fix errors before testing idempotency"
+                "SSH hardening not yet applied — run your playbook first"
             )
 
-        second_run = _run_ansible(
+        result = _run_ansible(
             "ansible-playbook", "playbook.yml",
         )
-        assert second_run.returncode == 0, (
-            "ARIA: Playbook failed on second run. "
+        assert result.returncode == 0, (
+            "ARIA: Playbook failed. "
             "Fix the errors reported by 'ansible-playbook playbook.yml'."
         )
-        changed_match = re.findall(r"changed=(\d+)", second_run.stdout)
+        changed_match = re.findall(r"changed=(\d+)", result.stdout)
         total_changed = sum(int(c) for c in changed_match)
         assert total_changed == 0, (
-            f"ARIA: Idempotency failure. Second playbook run changed "
+            f"ARIA: Idempotency failure. Playbook changed "
             f"{total_changed} task(s). A well-written playbook should make "
             f"no changes when run against an already-configured system. "
             f"Check your lineinfile regexp and line parameters."
