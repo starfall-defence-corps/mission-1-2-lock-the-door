@@ -5,12 +5,16 @@ Provides color-coded, phase-grouped output for mission verification.
 Writes all output to stderr so check-work.sh can discard pytest's
 default stdout while preserving our formatted display.
 """
+import os
 import pytest
 import sys
 
 # -- ANSI escape codes ------------------------------------------------------
 
-_COLOR = hasattr(sys.stderr, "isatty") and sys.stderr.isatty()
+_COLOR = (
+    os.environ.get("ARIA_COLOR") == "1"
+    or (hasattr(sys.stderr, "isatty") and sys.stderr.isatty())
+)
 
 
 def _c(code):
