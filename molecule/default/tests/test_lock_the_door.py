@@ -81,7 +81,7 @@ class TestPlaybookStructure:
             "Expected a list of plays."
         )
         play = data[0]
-        tasks = play.get("tasks", [])
+        tasks = play.get("tasks") or []
         real_tasks = [t for t in tasks if t]
         assert len(real_tasks) >= 3, (
             f"ARIA: Insufficient tasks in playbook. Found {len(real_tasks)} "
@@ -95,7 +95,7 @@ class TestPlaybookStructure:
         if data is None:
             pytest.skip("Playbook does not exist yet")
         play = data[0]
-        handlers = play.get("handlers", [])
+        handlers = play.get("handlers") or []
         real_handlers = [h for h in handlers if h]
         assert len(real_handlers) >= 1, (
             "ARIA: No handlers found in playbook. "
@@ -130,7 +130,7 @@ class TestDryRun:
         if data is None:
             pytest.skip("Playbook does not exist yet")
         play = data[0]
-        tasks = [t for t in play.get("tasks", []) if t]
+        tasks = [t for t in play.get("tasks") or [] if t]
         if len(tasks) < 3:
             pytest.skip("Playbook tasks not yet complete")
 
@@ -157,7 +157,7 @@ class TestSSHHardening:
         if data is None:
             pytest.skip("Playbook does not exist yet")
         play = data[0]
-        tasks = [t for t in play.get("tasks", []) if t]
+        tasks = [t for t in play.get("tasks") or [] if t]
         if len(tasks) < 3:
             pytest.skip("Playbook tasks not yet complete")
 
@@ -234,7 +234,7 @@ class TestIdempotency:
         if data is None:
             pytest.skip("Playbook does not exist yet")
         play = data[0]
-        tasks = [t for t in play.get("tasks", []) if t]
+        tasks = [t for t in play.get("tasks") or [] if t]
         if len(tasks) < 3:
             pytest.skip("Playbook tasks not yet complete")
 
