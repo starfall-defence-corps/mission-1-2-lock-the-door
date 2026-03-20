@@ -89,10 +89,14 @@ class _ARIAReporter:
             self._out(f"    {YELLOW}○{RESET} {DIM}{name} — skipped{RESET}\n")
         else:
             self.failed += 1
-            self._out(f"    {RED}✗{RESET} {name}\n")
             hint = _extract_hint(longrepr)
             if hint:
+                # Deficiency: expected failure, student hasn't done this yet
+                self._out(f"    {YELLOW}✗{RESET} {name}\n")
                 self._out(f"      {DIM}↳ {hint}{RESET}\n")
+            else:
+                # Error: unexpected failure (syntax error, connection issue)
+                self._out(f"    {RED}✗{RESET} {name}\n")
 
     def summary(self):
         if self._current_class is not None:

@@ -8,7 +8,7 @@
 # LoginGraceTime is at its insecure default.
 #
 # Your mission: Complete each task below to lock down SSH.
-# Replace the TODO comments with working Ansible tasks.
+# Replace the TODO markers with the correct Ansible syntax.
 #
 # Run your playbook:  ansible-playbook playbook.yml
 # Dry run first:      ansible-playbook playbook.yml --check --diff
@@ -19,49 +19,47 @@
   hosts: all
   become: true
 
-  tasks: []
+  tasks:
     # ----------------------------------------------------------
     # Task 1: Disable root login
     # ----------------------------------------------------------
-    # Module: ansible.builtin.lineinfile
-    # Target: /etc/ssh/sshd_config
-    # What to do: Ensure the line "PermitRootLogin no" is present.
-    #   Use a regexp to match any existing PermitRootLogin line.
-    #   The handler "Restart SSH" should be notified on change.
+    # Use lineinfile to ensure "PermitRootLogin no" is present
+    # in /etc/ssh/sshd_config. The regexp should match any
+    # existing PermitRootLogin line (commented or not).
     #
     # Hint: ansible-doc lineinfile
-    #
-    # TODO: Write your task here
+    - name: Disable root login
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: "^#?PermitRootLogin"
+        line: "PermitRootLogin no"
+      # TODO: Add 'notify: Restart SSH' to trigger the handler
 
     # ----------------------------------------------------------
     # Task 2: Disable password authentication
     # ----------------------------------------------------------
-    # Module: ansible.builtin.lineinfile
-    # Target: /etc/ssh/sshd_config
-    # What to do: Ensure "PasswordAuthentication no" is present.
-    #   Use a regexp to match any existing PasswordAuthentication line.
-    #   Notify the handler on change.
+    # Same pattern as Task 1, but for PasswordAuthentication.
     #
-    # TODO: Write your task here
+    # TODO: Write this task (use Task 1 as a template)
 
     # ----------------------------------------------------------
     # Task 3: Set LoginGraceTime
     # ----------------------------------------------------------
-    # Module: ansible.builtin.lineinfile
-    # Target: /etc/ssh/sshd_config
-    # What to do: Ensure "LoginGraceTime 30" is present.
-    #   Use a regexp to match any existing LoginGraceTime line.
-    #   Notify the handler on change.
+    # Ensure "LoginGraceTime 30" is present.
+    # The regexp should match any existing LoginGraceTime line.
     #
-    # TODO: Write your task here
+    # TODO: Write this task
 
-  handlers: []
+  handlers:
     # ----------------------------------------------------------
     # Handler: Restart SSH
     # ----------------------------------------------------------
-    # Module: ansible.builtin.service
-    # What to do: Restart the ssh service when notified.
-    #   name: ssh
-    #   state: restarted
+    # This handler restarts the SSH service when notified.
+    # It only runs if a task reports "changed".
     #
-    # TODO: Write your handler here
+    # Module: ansible.builtin.service
+    # name: ssh
+    # state: restarted
+    #
+    # TODO: Write the handler, then add 'notify: Restart SSH'
+    #       to each task above.
