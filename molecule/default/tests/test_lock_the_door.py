@@ -138,11 +138,8 @@ class TestDryRun:
             "ansible-playbook", "playbook.yml", "--check", "--diff",
         )
         assert result.returncode == 0, (
-            f"ARIA: Dry run failed. Your playbook has errors that must be "
-            f"resolved before deployment.\n"
-            f"Output: {result.stdout}\n"
-            f"Errors: {result.stderr}\n"
-            f"Run 'ansible-playbook playbook.yml --check --diff' to debug."
+            "ARIA: Dry run failed. Your playbook has syntax or logic errors. "
+            "Run 'ansible-playbook playbook.yml --check --diff' to see details."
         )
 
 
@@ -170,15 +167,18 @@ class TestSSHHardening:
             "ansible", "all", "-m", "shell",
             "-a", f"grep -E '^{pattern}' /etc/ssh/sshd_config",
         )
+        # Identify which nodes failed
+        failed_nodes = []
         for host in ["sdc-web", "sdc-db", "sdc-comms"]:
-            assert host in result.stdout, (
-                f"ARIA: No response from {host}. "
-                f"Ensure containers are running and connectivity is verified."
-            )
+            if host not in result.stdout:
+                failed_nodes.append(host)
+            elif f"{host} | FAILED" in result.stdout:
+                failed_nodes.append(host)
         assert result.returncode == 0, (
-            f"ARIA: {directive_name} not correctly set on all nodes. "
-            f"Run your playbook and check /etc/ssh/sshd_config.\n"
-            f"Output: {result.stdout}"
+            f"ARIA: '{directive_name}' not found on: "
+            f"{', '.join(failed_nodes) if failed_nodes else 'all nodes'}. "
+            f"Run your playbook, then verify with: "
+            f"ansible all -m shell -a \"grep {directive_name.split()[0]} /etc/ssh/sshd_config\""
         )
 
     def test_root_login_disabled(self):
@@ -232,9 +232,8 @@ class TestIdempotency:
             "ansible-playbook", "playbook.yml",
         )
         assert second_run.returncode == 0, (
-            f"ARIA: Playbook failed on second run.\n"
-            f"Output: {second_run.stdout}\n"
-            f"Errors: {second_run.stderr}"
+            "ARIA: Playbook failed on second run. "
+            "Fix the errors reported by 'ansible-playbook playbook.yml'."
         )
         changed_match = re.findall(r"changed=(\d+)", second_run.stdout)
         total_changed = sum(int(c) for c in changed_match)
