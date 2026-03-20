@@ -40,6 +40,7 @@ FRIENDLY = {
     "test_playbook_has_tasks":          "Playbook contains tasks",
     "test_playbook_has_handler":        "Playbook contains SSH restart handler",
     "test_check_mode_succeeds":         "Dry run (--check) succeeds",
+    "test_ssh_service_running":         "SSH service running on all nodes",
     "test_root_login_disabled":         "Root login disabled on all nodes",
     "test_password_auth_disabled":      "Password auth disabled on all nodes",
     "test_login_grace_time_set":        "LoginGraceTime set on all nodes",
