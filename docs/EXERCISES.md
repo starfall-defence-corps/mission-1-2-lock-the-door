@@ -41,7 +41,17 @@ This builds the Docker containers, generates SSH credentials, and starts all thr
   Fleet Status: 3 nodes ONLINE
 ```
 
-### Step 0.2 — If Things Go Wrong
+### Step 0.2 — Activate the Python Environment
+
+`make setup` creates a Python virtual environment with Ansible and testing tools. **Activate it** before running any Ansible commands:
+
+```bash
+source venv/bin/activate
+```
+
+Your terminal prompt will show `(venv)` when active. You need to do this once per terminal session. If you open a new terminal, activate again.
+
+### Step 0.3 — If Things Go Wrong
 
 If containers are in a bad state or you need a clean start at any point during the mission:
 

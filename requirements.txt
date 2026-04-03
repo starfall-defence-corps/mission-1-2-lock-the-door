@@ -1,3 +1,4 @@
+ansible-core
 pytest
 testinfra
 pyyaml
