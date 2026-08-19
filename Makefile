@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 ROOT_DIR := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 
-.PHONY: doctor setup test reset destroy ssh-web ssh-db ssh-comms help
+.PHONY: doctor submit setup test reset destroy ssh-web ssh-db ssh-comms help
 
 help: ## Show available commands
 	@echo ""
@@ -21,6 +21,9 @@ setup: ## Start the fleet (3 target nodes)
 
 test: ## Ask ARIA to verify your work
 	@bash $(ROOT_DIR)/scripts/check-work.sh
+
+submit: ## Submit your work for ARIA review (branch, commit, push, PR)
+	@bash $(ROOT_DIR)/scripts/submit.sh
 
 reset: ## Destroy and rebuild all fleet nodes
 	@bash $(ROOT_DIR)/scripts/reset-lab.sh
