@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 ROOT_DIR := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 
-.PHONY: setup test reset destroy ssh-web ssh-db ssh-comms help
+.PHONY: doctor setup test reset destroy ssh-web ssh-db ssh-comms help
 
 help: ## Show available commands
 	@echo ""
@@ -12,6 +12,9 @@ help: ## Show available commands
 	@echo ""
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2}'
 	@echo ""
+
+doctor: ## Check your machine is mission-ready (Docker, ports, tools)
+	@bash $(ROOT_DIR)/scripts/doctor.sh
 
 setup: ## Start the fleet (3 target nodes)
 	@bash $(ROOT_DIR)/scripts/setup-lab.sh

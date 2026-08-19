@@ -1,5 +1,7 @@
 # Starfall Defence Corps Academy
 
+> 🧭 [← 1.1 Fleet Census](https://github.com/starfall-defence-corps/mission-1-1-fleet-census) · **You are here: 1.2 Lock the Door** · [1.3 Clean Sweep →](https://github.com/starfall-defence-corps/mission-1-3-clean-sweep) · [🏠 Academy Hub](https://github.com/starfall-defence-corps/sdc-academy)
+
 ## Mission 1.2: Lock the Door
 
 > *"The SSH Root Fairy has visited again — root login enabled on every node. The digital equivalent of leaving your front door open with a sign saying 'COME IN.' Write your first OPORD (playbook) to lock down SSH fleet-wide."*
