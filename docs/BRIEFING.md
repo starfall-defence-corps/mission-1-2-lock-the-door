@@ -118,7 +118,7 @@ controls. See **HINTS.md → HARD MODE** for a worked pattern.
 
 | Command | Effect |
 |---------|--------|
-| `make hardmode` | Engage the implant — live drift every ~90s |
+| `make hardmode` | Engage the implant — live drift every ~120s |
 | `make defend` | ARIA sabotages the fleet and grades whether it **self-heals** |
 | `make standdown` | Recall the implant (fleet stays up) |
 | `make reset` | Full clean rebuild (also stops the implant) |

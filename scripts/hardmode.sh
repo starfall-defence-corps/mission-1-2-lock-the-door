@@ -13,7 +13,7 @@ source "$SCRIPT_DIR/drift-lib.sh"
 
 PID_FILE="$ROOT_DIR/.aria_drift.pid"
 LOG_FILE="$ROOT_DIR/.aria_drift.log"
-DRIFT_INTERVAL="${DRIFT_INTERVAL:-90}"
+DRIFT_INTERVAL="${DRIFT_INTERVAL:-120}"
 
 RED='\033[31m'; YELLOW='\033[33m'; CYAN='\033[36m'; BOLD='\033[1m'; RESET='\033[0m'
 
