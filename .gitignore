@@ -10,6 +10,10 @@ __pycache__/
 workspace/.ssh/
 venv/
 
+# HARD MODE (#49) — live-drift runtime artefacts
+.aria_drift.pid
+.aria_drift.log
+
 # Internal dev files
 CLAUDE.md
 AGENTS.md

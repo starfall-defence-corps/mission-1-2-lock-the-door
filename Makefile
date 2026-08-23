@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 ROOT_DIR := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 
-.PHONY: doctor submit setup test reset destroy ssh-web ssh-db ssh-comms help
+.PHONY: doctor submit setup test hardmode defend standdown reset destroy ssh-web ssh-db ssh-comms help
 
 help: ## Show available commands
 	@echo ""
@@ -24,6 +24,15 @@ test: ## Ask ARIA to verify your work
 
 submit: ## Submit your work for ARIA review (branch, commit, push, PR)
 	@bash $(ROOT_DIR)/scripts/submit.sh
+
+hardmode: ## HARD MODE (optional): start live drift — the door keeps re-opening
+	@bash $(ROOT_DIR)/scripts/hardmode.sh
+
+defend: ## HARD MODE: ARIA sabotages the fleet and grades whether it self-heals
+	@bash $(ROOT_DIR)/scripts/defend-check.sh
+
+standdown: ## HARD MODE: stop live drift (leaves the fleet running)
+	@bash $(ROOT_DIR)/scripts/standdown.sh
 
 reset: ## Destroy and rebuild all fleet nodes
 	@bash $(ROOT_DIR)/scripts/reset-lab.sh
