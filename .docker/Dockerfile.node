@@ -13,6 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     sudo \
     iproute2 \
     procps \
+    cron \
     && rm -rf /var/lib/apt/lists/*
 
 # Mask unnecessary systemd units that cause issues in containers
@@ -28,6 +29,9 @@ RUN systemctl mask \
 
 # Enable SSH via systemd
 RUN systemctl enable ssh
+
+# Enable cron so cadets can schedule a drift re-assert (HARD MODE, issue #49)
+RUN systemctl enable cron
 
 # === THE SSH ROOT FAIRY'S HANDIWORK ===
 # The SSH Root Fairy has visited every node in the fleet.

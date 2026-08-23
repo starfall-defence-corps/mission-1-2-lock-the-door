@@ -335,4 +335,56 @@ This is the complete, working playbook. If your version differs, compare each ta
 
 ---
 
+## HARD MODE Hints: Making Your Fix Hold *(optional)*
+
+Hard mode (`make hardmode`) runs a process that re-breaks the fleet every ~90
+seconds. Your playbook still hardens correctly — but the fix is undone minutes
+later. You cannot win by running the playbook faster. You win by making the
+hardening **re-apply itself automatically**.
+
+**The idea**: schedule a re-assert. If your controls are re-applied on a timer
+that fires more often than the drift, the fleet spends its life hardened —
+`make defend` sabotages a node and your schedule closes the door before the
+grader's window (80s) runs out.
+
+**One achievable pattern — a per-node cron re-assert.** Add a task to your
+playbook that installs a cron job on each node which re-runs the hardening. The
+`ansible.builtin.cron` module writes crontab entries for you:
+
+```yaml
+    - name: Deploy the hardening re-assert script
+      ansible.builtin.copy:
+        dest: /usr/local/sbin/reassert-ssh.sh
+        mode: '0755'
+        content: |
+          #!/usr/bin/env bash
+          cfg=/etc/ssh/sshd_config
+          sed -i -E 's/^#?PermitRootLogin.*/PermitRootLogin no/' "$cfg"
+          sed -i -E 's/^#?PasswordAuthentication.*/PasswordAuthentication no/' "$cfg"
+          sed -i -E 's/^#?LoginGraceTime.*/LoginGraceTime 30/' "$cfg"
+          rm -f /root/.ssh/authorized_keys
+          systemctl reload ssh 2>/dev/null || systemctl restart ssh
+
+    - name: Re-assert hardening every minute
+      ansible.builtin.cron:
+        name: "ssh-hardening-reassert"
+        minute: "*"
+        job: "/usr/local/sbin/reassert-ssh.sh"
+```
+
+Run your playbook once to *deploy* the re-assert, then `make defend`. Cron fires
+at the top of each minute, re-closes the door, and the grader sees the fleet
+self-heal.
+
+> **Purists' note**: cron's finest granularity is one minute, which is why the
+> grader waits 80 seconds. The "proper" production answer is `ansible-pull` on a
+> schedule (each node pulls and applies the play from Git) — same principle,
+> Git-backed. Cron is the Module 1 version of the same lesson: **maintenance,
+> not one-shot**.
+
+Also purge the implant: notice the re-assert script removes
+`/root/.ssh/authorized_keys` — the rogue root key the Voidborn keep planting.
+
+---
+
 *SDC Cyber Command — 2187 — CADET EYES ONLY*
