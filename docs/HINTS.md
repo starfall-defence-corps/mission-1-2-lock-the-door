@@ -1,6 +1,6 @@
 # Mission 1.2: Lock the Door — Hints & Troubleshooting Guide
 
-**Rank**: Cadet (Maximum Scaffolding)
+**Rank**: Sub-Lieutenant (Maximum Scaffolding)
 
 This guide is your safety net. If something is not working, the answer is likely here. Read the relevant section carefully before asking for help.
 
