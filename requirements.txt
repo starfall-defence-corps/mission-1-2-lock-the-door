@@ -3,3 +3,5 @@ pytest
 testinfra
 pyyaml
 molecule
+# ARIA phase reporter — shared plugin (aria#9)
+aria-reporter @ git+https://github.com/starfall-defence-corps/aria@main
