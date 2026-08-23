@@ -337,7 +337,7 @@ This is the complete, working playbook. If your version differs, compare each ta
 
 ## HARD MODE Hints: Making Your Fix Hold *(optional)*
 
-Hard mode (`make hardmode`) runs a process that re-breaks the fleet every ~90
+Hard mode (`make hardmode`) runs a process that re-breaks the fleet every ~120
 seconds. Your playbook still hardens correctly — but the fix is undone minutes
 later. You cannot win by running the playbook faster. You win by making the
 hardening **re-apply itself automatically**.

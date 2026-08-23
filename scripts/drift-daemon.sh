@@ -19,7 +19,7 @@ ROOT_DIR="$(dirname "$SCRIPT_DIR")"
 # shellcheck source=scripts/drift-lib.sh
 source "$SCRIPT_DIR/drift-lib.sh"
 
-DRIFT_INTERVAL="${DRIFT_INTERVAL:-90}"
+DRIFT_INTERVAL="${DRIFT_INTERVAL:-120}"
 DRIFT_LOG="${ARIA_DRIFT_LOG:-$ROOT_DIR/.aria_drift.log}"
 
 # Give the cadet a grace period before the first strike so a fresh `make
