@@ -76,6 +76,9 @@ make setup      Start the fleet (3 target nodes)
 make test       Ask ARIA to verify your work
 make submit     Submit your work for ARIA review (branch, commit, push, PR)
 make reset      Destroy and rebuild all fleet nodes
+make hardmode   Engage the drift implant — hard mode (see BRIEFING)
+make defend     ARIA sabotages the fleet and grades whether it self-heals
+make standdown  Recall the implant (fleet stays up)
 make destroy    Tear down everything (containers, keys, venv)
 make ssh-web    SSH into sdc-web (fleet web server)
 make ssh-db     SSH into sdc-db (fleet database server)
