@@ -1,6 +1,6 @@
 # Starfall Defence Corps Academy
 
-> 🧭 [← 1.1 Fleet Census](https://github.com/starfall-defence-corps/mission-1-1-fleet-census) · **You are here: 1.2 Lock the Door** · [1.3 Clean Sweep →](https://github.com/starfall-defence-corps/mission-1-3-clean-sweep) · [🏠 Academy Hub](https://github.com/starfall-defence-corps/sdc-academy)
+> 🧭 [← 1.1 Fleet Census](https://github.com/starfall-defence-corps/mission-1-1-fleet-census) · **You are here: 1.2 Lock the Door** · [1.3 Clean Sweep →](https://github.com/starfall-defence-corps/mission-1-3-clean-sweep) · [🏠 Academy Hub](https://github.com/starfall-defence-corps/sdc-academy) · [📚 Field Manuals](https://github.com/starfall-defence-corps/sdc-academy/tree/main/field-manuals)
 
 > ☁️ **No Docker on your machine?** Create your own copy first (Use this template), then on **your** repo: **Code → Codespaces → Create codespace** — everything is preinstalled. First boot takes ~5 min (one-time); after that it starts fast.
 

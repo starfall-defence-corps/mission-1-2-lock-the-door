@@ -17,7 +17,7 @@ Voidborn operative **THE SSH ROOT FAIRY** has swept through the fleet. Modus ope
 
 ### 1b. Friendly Forces
 
-The **Starfall Defence Corps (SDC)** fleet has been inventoried (Mission 1.1), but remains dangerously exposed. SSH access controls are non-existent. Every node is one brute-force attempt away from full compromise. The fleet is catalogued but undefended.
+The **Starfall Defence Corps (SDC)** fleet has been inventoried ([Mission 1.1](https://github.com/starfall-defence-corps/mission-1-1-fleet-census)), but remains dangerously exposed. SSH access controls are non-existent. Every node is one brute-force attempt away from full compromise. The fleet is catalogued but undefended.
 
 ### 1c. Attachments / Support
 
