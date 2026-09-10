@@ -1,7 +1,7 @@
 # Mission 1.2: Lock the Door — Progress Tracker
 
 **Rank**: Midshipman
-**Mission Progress**: 2 of 5 toward Sub-Lieutenant
+**Mission Progress**: 2 of 6 toward Sub-Lieutenant
 
 Check each item off as you complete it. If a phase is blocked, see `docs/HINTS.md`.
 
