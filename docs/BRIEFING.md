@@ -112,9 +112,12 @@ is wide open again. **A one-shot fix does not hold against continuous drift.**
 This is the real lesson of automation: configuration is not a state you *reach*,
 it is a state you *maintain*. Your hardening must **re-assert itself on a
 schedule** so the fleet re-hardens automatically, faster than the implant can
-revert it. The tools of the trade: a scheduled re-run of your play
-(`ansible-pull` on a cron), or a cron job on each node that re-applies the
-controls. See **HINTS.md → HARD MODE** for a worked pattern.
+revert it. In production, the tool of the trade is `ansible-pull` on a
+schedule — each node pulls and applies the play from Git, a single source of
+truth. That pattern **cannot run on these lab nodes** (no `ansible` or `git`
+installed) and is taught in a later module. For this lab, the intended
+solution is a cron job on each node that re-applies the controls directly.
+See **HINTS.md → HARD MODE** for a worked pattern.
 
 | Command | Effect |
 |---------|--------|

@@ -35,7 +35,8 @@
         regexp: "^#?PermitRootLogin"
         line: "PermitRootLogin no"
         validate: "sshd -t -f %s"
-      # TODO: Add 'notify: Restart SSH' to trigger the handler
+      # TODO: This is Task 1's only remaining edit — add 'notify: Restart SSH'
+      #       below to trigger the handler (see Phase 3).
 
     # ----------------------------------------------------------
     # Task 2: Disable password authentication
@@ -62,9 +63,10 @@
     # This handler restarts the SSH service when notified.
     # It only runs if a task reports "changed".
     #
-    # Module: ansible.builtin.service
-    # name: ssh
-    # state: restarted
+    # - name: Restart SSH          <- must match your 'notify:' lines exactly
+    #   ansible.builtin.service:
+    #     name: ssh                <- the service being restarted
+    #     state: restarted
     #
-    # TODO: Write the handler, then add 'notify: Restart SSH'
+    # TODO: Write the handler above, then add 'notify: Restart SSH'
     #       to each task above.

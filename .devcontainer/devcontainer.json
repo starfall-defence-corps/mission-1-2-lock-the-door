@@ -3,12 +3,13 @@
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
   "features": {
     "ghcr.io/devcontainers/features/docker-in-docker:2": {},
-    "ghcr.io/devcontainers/features/python:1": { "version": "3.12" }
+    "ghcr.io/devcontainers/features/python:1": { "version": "3.12" },
+    "ghcr.io/devcontainers/features/github-cli:1": {}
   },
   "hostRequirements": {
     "cpus": 4
   },
-  "postCreateCommand": "sudo apt-get update -qq && sudo apt-get install -y -qq make openssh-client && pipx install --include-deps ansible-core",
+  "postCreateCommand": "sudo chmod -R o-w /workspaces && sudo apt-get update -qq && sudo apt-get install -y -qq make openssh-client && pipx install --include-deps ansible-core",
   "customizations": {
     "vscode": {
       "extensions": ["redhat.ansible", "redhat.vscode-yaml"]

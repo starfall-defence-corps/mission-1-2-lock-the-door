@@ -51,13 +51,21 @@ jobs:
               : exitCode === '0' ? ':white_check_mark:' : ':x:';
             const marker = 'ARIA — Mission 1-2 Review';
 
+            // Render the qualitative review as markdown in the comment body;
+            // only the console portion stays inside the code fence (#127).
+            const splitAt = output.indexOf('## ARIA QUALITATIVE REVIEW');
+            const consoleOut = splitAt === -1 ? output : output.slice(0, splitAt).trimEnd();
+            const reviewMd = splitAt === -1 ? '' : output.slice(splitAt);
+
             const body = `## ${icon} ${marker} (${status})
 
+            ${reviewMd}
+
             <details>
-            <summary>Full ARIA Output</summary>
+            <summary>Console output</summary>
 
             \`\`\`
-            ${output}
+            ${consoleOut}
             \`\`\`
 
             </details>

@@ -154,15 +154,9 @@ ARIA checks that the playbook file exists and is valid YAML. Phase 1 tests (OPOR
 
 You will complete the three tasks in `workspace/playbook.yml`. Each task uses the `lineinfile` module to ensure a specific SSH configuration line is present in `/etc/ssh/sshd_config`.
 
-### Step 2.1 — Task 1: Disable Root Login
+### Step 2.1 — Task 1: Disable Root Login (Worked Example)
 
-Open `workspace/playbook.yml` and find the first TODO block. Replace it with a task that:
-
-1. Uses the `ansible.builtin.lineinfile` module
-2. Targets `/etc/ssh/sshd_config`
-3. Uses a `regexp` to match any existing `PermitRootLogin` line (including commented-out lines)
-4. Sets the `line` to `PermitRootLogin no`
-5. Sets `state: present`
+Task 1 in `workspace/playbook.yml` is issued **pre-written** — it is your worked example, not a TODO. Open the file and find it now.
 
 **Walkthrough of how a `lineinfile` task is structured:**
 
@@ -173,6 +167,8 @@ Open `workspace/playbook.yml` and find the first TODO block. Replace it with a t
         regexp: '^#?MaxAuthTries'
         line: 'MaxAuthTries 3'
         state: present
+        validate: 'sshd -t -f %s'
+      notify: Restart SSH
 ```
 
 **Breaking this down:**
@@ -185,8 +181,14 @@ Open `workspace/playbook.yml` and find the first TODO block. Replace it with a t
 | `regexp: '^#?MaxAuthTries'` | Match lines starting with `MaxAuthTries` or `#MaxAuthTries` (the `#?` makes the comment character optional) |
 | `line:` | The replacement line — what the file SHOULD contain |
 | `state: present` | Ensure this line exists in the file |
+| `validate: 'sshd -t -f %s'` | Runs `sshd -t` against the modified file **before** it is applied — a typo fails safely instead of breaking SSH |
+| `notify: Restart SSH` | Fires the `Restart SSH` handler when this task reports a change — covered in Phase 3 |
 
-Now write your Task 1 following this same pattern, but for `PermitRootLogin` instead of `MaxAuthTries`.
+**Note:** `state: present` is the default for `lineinfile` — the issued Task 1 in your playbook omits it entirely. Both forms (explicit or omitted) are equivalent.
+
+**Now compare Task 1 in your playbook against this walkthrough, line by line.** You will find they match — `path`, `regexp`, `line`, and `validate` are all there, just written for `PermitRootLogin` instead of `MaxAuthTries`. The one piece missing is `notify: Restart SSH` — that is your only edit for Task 1, and Phase 3 walks you through adding it.
+
+**Tasks 2 and 3, below, are where you write from scratch** — there is no pre-written starting point for those. Use this same pattern.
 
 **Important YAML note:** Tasks must be indented under `tasks:` at the correct level. Each task starts with `- name:` at the same indentation level.
 
@@ -277,12 +279,22 @@ This is important for services like SSH. You do not want to restart SSH on every
 
 ### Step 3.2 — Write the SSH Restart Handler
 
-Find the handler TODO block in `workspace/playbook.yml`. Replace it with a handler that:
+The `handlers:` section **already exists** in `workspace/playbook.yml` — you are not creating a new key, only adding an entry beneath it. Find the handler TODO comment block under `handlers:` and add an entry there that:
 
 1. Has the name `Restart SSH`
 2. Uses the `ansible.builtin.service` module
 3. Sets `name: ssh` (the SSH service name on Ubuntu)
 4. Sets `state: restarted`
+
+Indentation matters — the entry sits at the same level as the existing `handlers:` comments, structured like this:
+
+```yaml
+  handlers:
+    - name: Restart SSH
+      ansible.builtin.service:
+        name: ssh
+        state: restarted
+```
 
 **Important:** The handler `name` must match exactly what you use in the `notify` keyword. Case matters.
 
@@ -488,6 +500,40 @@ Before closing this mission, confirm the following:
 - [ ] `--check` and `--diff` for safe dry runs
 - [ ] Idempotency — the core principle of configuration management
 - [ ] The `become: true` directive for privilege escalation
+
+---
+
+## PHASE 4b — HARD MODE: LIVE DRIFT *(optional)*
+
+> For cadets who have already passed `make test` and want the real thing.
+
+The Voidborn left a persistence implant on the fleet — a process that re-breaks your hardening roughly every 120 seconds. A one-shot playbook run cannot win against continuous drift: by the time you finish typing `ansible-playbook`, the clock on the next re-break has already started. You win only by making your hardening **re-apply itself**, faster than the implant can undo it.
+
+### Step 4b.1 — Engage the Implant
+
+```bash
+make hardmode
+```
+
+### Step 4b.2 — Add a Re-Assert Mechanism
+
+Add tasks to `workspace/playbook.yml` that install a scheduled job on each node to re-apply the hardening automatically. See **HINTS.md → HARD MODE Hints: Making Your Fix Hold** for a worked pattern using `ansible.builtin.cron`.
+
+### Step 4b.3 — Deploy, Defend, Stand Down
+
+```bash
+ansible-playbook workspace/playbook.yml
+make defend
+make standdown
+```
+
+`make defend` sabotages the fleet and watches for up to 80 seconds to see whether your re-assert mechanism closes the doors again on its own — this run is graded. `make standdown` recalls the implant once you are done.
+
+**Clarity note:** In this lab, the cron re-assert is **the** route, not one option among equals. The production-grade alternative — `ansible-pull` on a schedule — is what you would actually reach for in the field: a single source of truth in Git, with no logic duplicated between the playbook and a shell script. It **cannot run on these lab nodes** (no `ansible` or `git` installed on them) and it returns in a later module. The cron-plus-`sed` script here is a deliberate Module 1 simplification, not production practice.
+
+See **BRIEFING.md §4b** and **HINTS.md → HARD MODE Hints** for full detail.
+
+Hard mode is optional and is not required to complete Mission 1.2.
 
 ---
 
