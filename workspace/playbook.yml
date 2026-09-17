@@ -10,9 +10,10 @@
 # Your mission: Complete each task below to lock down SSH.
 # Replace the TODO markers with the correct Ansible syntax.
 #
-# Run your playbook:  ansible-playbook playbook.yml
-# Dry run first:      ansible-playbook playbook.yml --check --diff
-# Verify your work:   make test  (from project root)
+# All commands run from the project root (the folder with the Makefile):
+# Run your playbook:  ansible-playbook workspace/playbook.yml
+# Dry run first:      ansible-playbook workspace/playbook.yml --check --diff
+# Verify your work:   make test
 # =============================================================
 
 - name: Lock the Door — SSH Hardening

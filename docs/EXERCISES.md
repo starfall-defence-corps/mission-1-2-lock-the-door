@@ -8,18 +8,7 @@ DOCUMENT: EXERCISES — Phase-by-Phase Operational Instructions
 
 Complete each phase in sequence. Run `make test` after each phase. Do not advance until ARIA confirms compliance.
 
-**Two directories, two purposes:**
-
-- **Ansible commands** (`ansible`, `ansible-playbook`): Run from `workspace/` where `ansible.cfg` lives.
-- **Make commands** (`make test`, `make reset`): Run from the **project root** (where the `Makefile` lives).
-
-When a phase says "Run ARIA's Verification", return to the project root first:
-
-```bash
-cd ..        # from workspace/ back to project root
-make test
-cd workspace # return to workspace for the next phase
-```
+**One directory for everything**: run every command in this mission — `ansible ...` and `make ...` — from the **project root** (the folder with the `Makefile`). An `ansible.cfg` lives both there and in `workspace/`, so Ansible works from either; the steps below assume the project root throughout.
 
 ---
 
@@ -29,7 +18,7 @@ cd workspace # return to workspace for the next phase
 
 ### Step 0.1 — Start the Fleet
 
-From the **project root directory** (not `workspace/`), run:
+From the **project root directory**, run:
 
 ```bash
 make setup
@@ -71,15 +60,13 @@ This destroys all containers and rebuilds them from scratch. Your work in `works
 
 You will inspect the current SSH configuration on all fleet nodes using ad-hoc commands, examine the skeleton playbook you will complete, and learn about the `lineinfile` module — the tool that will modify SSH configuration files across the fleet.
 
-All Ansible commands in this phase are run from `workspace/`.
-
-### Step 1.1 — Change Into the Workspace Directory
+### Step 1.1 — Confirm You Are in the Project Root
 
 ```bash
-cd workspace
+ls Makefile
 ```
 
-You must be in `workspace/` for Ansible to find `ansible.cfg` and the inventory path it references.
+If that lists the `Makefile`, you are in the right place — every command from here on runs from this directory.
 
 ### Step 1.2 — Verify Fleet Connectivity
 
@@ -151,12 +138,8 @@ The `regexp` parameter is critical — it finds existing lines that match the pa
 
 ### Step 1.6 — Run ARIA's Verification
 
-Return to the project root and run:
-
 ```bash
-cd ..
 make test
-cd workspace
 ```
 
 ARIA checks that the playbook file exists and is valid YAML. Phase 1 tests (OPORD Structure) verify the playbook skeleton is present. Do not worry about later phases yet.
@@ -232,7 +215,7 @@ Find the third TODO block. Write a task:
 Before running anything, check your playbook has valid YAML syntax:
 
 ```bash
-ansible-playbook playbook.yml --syntax-check
+ansible-playbook workspace/playbook.yml --syntax-check
 ```
 
 If you see errors, the most common causes are:
@@ -246,9 +229,7 @@ Fix any syntax errors before proceeding.
 ### Step 2.5 — Run ARIA's Verification
 
 ```bash
-cd ..
 make test
-cd workspace
 ```
 
 At this point, ARIA may report partial progress. The tasks are written but handlers are not yet in place. Proceed to Phase 3.
@@ -318,7 +299,7 @@ This line goes at the same indentation level as the module parameters (e.g., `pa
 ### Step 3.4 — Verify YAML Syntax Again
 
 ```bash
-ansible-playbook playbook.yml --syntax-check
+ansible-playbook workspace/playbook.yml --syntax-check
 ```
 
 Common mistakes at this stage:
@@ -329,9 +310,7 @@ Common mistakes at this stage:
 ### Step 3.5 — Run ARIA's Verification
 
 ```bash
-cd ..
 make test
-cd workspace
 ```
 
 ARIA should now confirm your playbook has valid structure with tasks and handlers. Proceed to Phase 4.
@@ -346,12 +325,10 @@ ARIA should now confirm your playbook has valid structure with tasks and handler
 
 You will execute your playbook in three stages: dry run (preview changes), live execution (apply changes), and idempotency verification (confirm second run is clean).
 
-All commands are run from `workspace/`.
-
 ### Step 4.1 — Dry Run with --check --diff
 
 ```bash
-ansible-playbook playbook.yml --check --diff
+ansible-playbook workspace/playbook.yml --check --diff
 ```
 
 **What this does:**
@@ -370,7 +347,7 @@ If the dry run shows errors or unexpected changes, fix your playbook before proc
 ### Step 4.2 — Execute for Real
 
 ```bash
-ansible-playbook playbook.yml
+ansible-playbook workspace/playbook.yml
 ```
 
 Watch the output carefully. You should see:
@@ -442,7 +419,7 @@ You should see `LoginGraceTime 30`.
 Run the playbook a second time:
 
 ```bash
-ansible-playbook playbook.yml
+ansible-playbook workspace/playbook.yml
 ```
 
 This time, the output should show:
@@ -457,10 +434,9 @@ If you see `changed` on the second run, something in your playbook is not idempo
 
 ### Step 4.5 — Final ARIA Verification
 
-Return to the project root and run the full test suite:
+Run the full test suite:
 
 ```bash
-cd ..
 make test
 ```
 

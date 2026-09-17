@@ -40,7 +40,7 @@ if [ $EXIT_CODE -eq 0 ]; then
     echo -e "  ARIA: All objectives verified."
     echo -e "  Mission 1.2 status: COMPLETE"
     echo -e ""
-    echo -e "  Cadet, the SSH Root Fairy has been defeated."
+    echo -e "  Midshipman, the SSH Root Fairy has been defeated."
     echo -e "  Fleet SSH access is now hardened."
     echo -e "  The Starfall Defence Corps salutes your work."
     echo -e "  ==============================================${RESET}"

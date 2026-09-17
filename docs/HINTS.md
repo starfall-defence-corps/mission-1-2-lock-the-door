@@ -228,7 +228,7 @@ On WSL, Windows-mounted directories have `777` permissions by default. Ansible t
 ```
 export ANSIBLE_CONFIG=$(pwd)/ansible.cfg
 ```
-Run this from the `workspace/` directory before running Ansible commands. Add it to your `~/.bashrc` or `~/.zshrc` to make it persistent.
+Run this from the project root before running Ansible commands. Add it to your `~/.bashrc` or `~/.zshrc` to make it persistent.
 
 **Permanent fix — configure WSL mount options:**
 Create or edit `/etc/wsl.conf`:
@@ -249,7 +249,7 @@ make reset
 This rebuilds the entire fleet from scratch. You will not lose your playbook — only the containers are reset. Note: resetting also restores the SSH Root Fairy's misconfigurations, so you will need to run your playbook again.
 
 **"make: *** No targets specified" or "make: *** No rule to make target"**
-You are in the wrong directory. `make` commands must be run from the project root where the `Makefile` is located — not from `workspace/`. Run `cd ..` to go back to the project root.
+You are in the wrong directory. `make` commands must be run from the project root where the `Makefile` is located. Navigate back to the project root and try again.
 
 **If `make test` fails:**
 Read the ARIA error message carefully. ARIA tells you specifically what it expected versus what it found. Fix that one thing, then run `make test` again.
@@ -263,7 +263,7 @@ All three containers (`sdc-web`, `sdc-db`, `sdc-comms`) should appear with a sta
 **Quick diagnostic sequence when something is not working:**
 1. `docker ps` — are containers running?
 2. `ansible all -m ping` — can Ansible reach them?
-3. `ansible-playbook playbook.yml --syntax-check` — is the playbook valid YAML?
+3. `ansible-playbook workspace/playbook.yml --syntax-check` — is the playbook valid YAML?
 4. Check indentation in `workspace/playbook.yml`
 5. Check `ansible.cfg` is present and points to the correct inventory path
 
@@ -275,10 +275,10 @@ All three containers (`sdc-web`, `sdc-db`, `sdc-comms`) should appear with a sta
 |---------|---------|
 | `ansible-doc lineinfile` | Full module documentation |
 | `ansible-doc service` | Handler module documentation |
-| `ansible-playbook playbook.yml --syntax-check` | Validate YAML without running |
-| `ansible-playbook playbook.yml --check --diff` | Dry run with diff preview |
-| `ansible-playbook playbook.yml` | Execute the playbook |
-| `ansible-playbook playbook.yml -v` | Execute with verbose output |
+| `ansible-playbook workspace/playbook.yml --syntax-check` | Validate YAML without running |
+| `ansible-playbook workspace/playbook.yml --check --diff` | Dry run with diff preview |
+| `ansible-playbook workspace/playbook.yml` | Execute the playbook |
+| `ansible-playbook workspace/playbook.yml -v` | Execute with verbose output |
 | `ansible all -m ping` | Test connectivity to all nodes |
 | `ansible all -m shell -a "command"` | Run ad-hoc shell command on all nodes |
 
