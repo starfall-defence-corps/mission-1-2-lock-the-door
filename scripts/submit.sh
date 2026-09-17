@@ -73,6 +73,14 @@ else
     say "Work committed"
 fi
 
+# A PR needs a diff. If this branch has no commits beyond main, GitHub will
+# refuse it — stop here with a real explanation instead.
+BASE_REF="origin/main"
+git rev-parse --verify -q "$BASE_REF" > /dev/null 2>&1 || BASE_REF="main"
+if [ "$(git rev-list --count "$BASE_REF"..HEAD 2>/dev/null || echo 0)" = "0" ]; then
+    die "Something to submit" "Your branch has no changes for ARIA to review. Edit workspace/playbook.yml and run 'make test' until all phases pass, then run 'make submit' again"
+fi
+
 # -- Push --------------------------------------------------------------------
 git push -q -u origin "$BRANCH" \
     || die "Push to origin/$BRANCH" "Check your network and that you have push access to your own repo, then retry"
@@ -84,10 +92,13 @@ if [ -n "${EXISTING:-}" ]; then
     PR_URL="$EXISTING"
     say "Existing PR updated"
 else
-    PR_URL=$(gh pr create --base main --head "$BRANCH" \
+    PR_OUT=$(gh pr create --base main --head "$BRANCH" \
         --title "Mission submission: ${MISSION}" \
-        --body "Cadet submission for ARIA review. Run \`make test\` locally before requesting review." 2>/dev/null) \
-        || die "Open the pull request" "Run 'gh pr create --base main --head $BRANCH' to see the underlying error"
+        --body "Midshipman submission for ARIA review. Run \`make test\` locally before requesting review." 2>&1)
+    if [ $? -ne 0 ]; then
+        die "Open the pull request" "GitHub said: ${PR_OUT}"
+    fi
+    PR_URL="$PR_OUT"
     say "Pull request opened"
 fi
 
